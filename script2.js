@@ -3,10 +3,12 @@ const TelegramBot = require("node-telegram-bot-api");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const AdblockerPlugin = require("puppeteer-extra-plugin-adblocker");
 const express = require("express");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const app = express();
 
-const telegramBotToken = "6620138617:AAGRWsev35s-2RhLwmBvusp-lEJPNrT3gfU";
+const telegramBotToken = process.env.BOT_TOKEN;
 const chatId = "707047567";
 
 app.get("/", (req, res) => {
@@ -37,8 +39,8 @@ async function performLogin() {
     await page.goto(loginUrl, { waitUntil: "domcontentloaded" });
 
     // Replace 'your_email' and 'your_password' with the actual email and password
-    const email = "rockaniket66@gmail.com";
-    const password = "ankit@406";
+    const email = process.env.EMAIL;
+    const password = process.env.PASSWORD;
 
     await page.type("#email", email);
     await page.type("#password", password);
