@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer-extra");
 const TelegramBot = require("node-telegram-bot-api");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
-const AdblockerPlugin = require("puppeteer-extra-plugin-adblocker");
+// const AdblockerPlugin = require("puppeteer-extra-plugin-adblocker");
 const express = require("express");
 const chrome = require("chrome-aws-lambda");
 const dotenv = require("dotenv");
@@ -51,7 +51,6 @@ async function performLogin() {
   try {
     browser = await puppeteer
       .use(StealthPlugin())
-      .use(AdblockerPlugin())
       .launch(options);
     const page = await browser.newPage();
     await page.goto(loginUrl, { waitUntil: "domcontentloaded" });

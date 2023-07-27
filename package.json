@@ -16,7 +16,6 @@
     "node-telegram-bot-api": "^0.61.0",
     "nodemon": "^3.0.1",
     "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-adblocker": "^2.13.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2"
   }
 }
