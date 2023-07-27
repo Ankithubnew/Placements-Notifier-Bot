@@ -3,6 +3,7 @@ const TelegramBot = require("node-telegram-bot-api");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const AdblockerPlugin = require("puppeteer-extra-plugin-adblocker");
 const express = require("express");
+const chrome = require("chrome-aws-lambda");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -25,8 +26,24 @@ const placementsUrl = "https://placements.masaischool.com/placements";
 
 let isLoggedIn = false; // Flag to track login status
 let browser; // Puppeteer browser instance
+let options;
 
 const bot = new TelegramBot(telegramBotToken, { polling: true });
+
+if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
+  options = {
+    args: [...chrome.args, "--hide-scrollbars", "--disable-web-security"],
+    defaultViewport: chrome.defaultViewport,
+    executablePath: await chrome.executablePath,
+    headless: true,
+    ignoreHTTPSErrors: true,
+  };
+}else{
+  options = {
+    headless: true,
+  };
+}
+
 
 // Function to perform login using Puppeteer
 async function performLogin() {
@@ -34,7 +51,7 @@ async function performLogin() {
     browser = await puppeteer
       .use(StealthPlugin())
       .use(AdblockerPlugin())
-      .launch({ headless: true });
+      .launch(options);
     const page = await browser.newPage();
     await page.goto(loginUrl, { waitUntil: "domcontentloaded" });
 
