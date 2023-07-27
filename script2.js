@@ -5,6 +5,7 @@ const AdblockerPlugin = require("puppeteer-extra-plugin-adblocker");
 const express = require("express");
 const chrome = require("chrome-aws-lambda");
 const dotenv = require("dotenv");
+
 dotenv.config();
 
 const app = express();
