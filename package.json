@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@sparticuz/chromium": "^106.0.2",
     "chrome-aws-lambda": "^10.1.0",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",

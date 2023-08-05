@@ -5,6 +5,7 @@ const StealthPlugin = require("puppeteer-extra-plugin-stealth");
 const express = require("express");
 // const chrome = require("chrome-aws-lambda");
 const dotenv = require("dotenv");
+const chromium = require("@sparticuz/chromium");
 
 dotenv.config();
 
@@ -40,13 +41,27 @@ const bot = new TelegramBot(telegramBotToken, { polling: true });
 //   };
 // }else{
 // }
-options = {
-  args: ["--no-sandbox"],
-};
+
+// options = {
+//   args: ["--no-sandbox"],
+// };
+
+// optin
 
 async function performLogin() {
   try {
-    browser = await puppeteer.use(StealthPlugin()).launch(options);
+    puppeteer.use(StealthPlugin());
+    browser = await puppeteer.launch({
+      args:chromium.args,
+      defaultViewport:chromium.defaultViewport,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless,
+      ignoreHTTPSErrors: true,
+      args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
+    })
+
+
+    // browser = await puppeteer.use(StealthPlugin()).launch(options);
     const page = await browser.newPage();
     await page.goto(loginUrl, { waitUntil: "domcontentloaded" });
 
@@ -255,3 +270,27 @@ async function continuouslyCheckPlacements() {
 }
 
 continuouslyCheckPlacements();
+
+// exports.handler = async (event, context) => {
+//   const recursivelyCheckPlacements = async () => {
+//     try {
+//       let page;
+
+//       if (!isLoggedIn) {
+//         page = await performLogin();
+//         isLoggedIn = true;
+//       } else {
+//         const pages = await browser.pages();
+//         page = pages[0];
+//       }
+//       await checkNewPlacements(page);
+//       const timeout = 5 * 60 * 1000;
+//       setTimeout(recursivelyCheckPlacements, timeout);  // Call the function recursively
+//     } catch (error) {
+//       console.error("Error occurred with continuouslyCheckPlacements:", error);
+//     }
+//   };
+
+//   // Start the initial invocation of the recursive function
+//   recursivelyCheckPlacements();
+// };
