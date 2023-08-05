@@ -1,9 +1,7 @@
 const puppeteer = require("puppeteer-extra");
 const TelegramBot = require("node-telegram-bot-api");
 const StealthPlugin = require("puppeteer-extra-plugin-stealth");
-// const AdblockerPlugin = require("puppeteer-extra-plugin-adblocker");
 const express = require("express");
-// const chrome = require("chrome-aws-lambda");
 const dotenv = require("dotenv");
 const chromium = require("@sparticuz/chromium");
 
