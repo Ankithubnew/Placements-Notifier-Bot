@@ -52,6 +52,11 @@ You can also use PlacementsNotifierBot on Replit:
 
 Check out a video demonstration of PlacementsNotifierBot in action: [Watch Here](https://drive.google.com/file/d/1m-5nXAf-JZdWTYjAsdoDDyAOLEWr4R5M/view).
 
+
+Screenshot:
+![Screenshot](https://github.com/Ankithubnew/Placements-Notifier-Bot/assets/120358743/afce4804-cdb0-4597-bfd1-7bed74c0e045)
+
+
 ## Contributions and Feedback
 
 Contributions and feedback are welcome! Feel free to submit issues, feature requests, or pull requests. Your input helps improve the bot for everyone.
