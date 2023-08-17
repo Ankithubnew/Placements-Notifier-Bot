@@ -54,7 +54,8 @@ Check out a video demonstration of PlacementsNotifierBot in action: [Watch Here]
 
 
 Screenshot:
-![Screenshot](https://github.com/Ankithubnew/Placements-Notifier-Bot/assets/120358743/afce4804-cdb0-4597-bfd1-7bed74c0e045)
+![Screenshot](https://github.com/Ankithubnew/Placements-Notifier-Bot/assets/120358743/f71f2671-c216-4959-9f09-80c731431d1e)
+
 
 
 ## Contributions and Feedback
