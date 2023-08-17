@@ -1,22 +1,19 @@
-const puppeteer = require("puppeteer-extra");
+const puppeteer = require("puppeteer");
 const TelegramBot = require("node-telegram-bot-api");
-const StealthPlugin = require("puppeteer-extra-plugin-stealth");
+const moment = require('moment-timezone');
 const express = require("express");
 const dotenv = require("dotenv");
-const chromium = require("@sparticuz/chromium");
-
 dotenv.config();
 
 const app = express();
-
 const telegramBotToken = process.env.BOT_TOKEN;
-const chatId = "707047567";
+const chatId = "707047567"; //change the chatId with your tg id
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.listen(3000, () => {
+app.listen(3008, () => {
   console.log("server started");
 });
 
@@ -29,37 +26,20 @@ let options;
 
 const bot = new TelegramBot(telegramBotToken, { polling: true });
 
-// if (process.env.AWS_LAMBDA_FUNCTION_VERSION) {
-//   options = {
-//     args: [...chrome.args, "--hide-scrollbars", "--disable-web-security"],
-//     defaultViewport: chrome.defaultViewport,
-//     executablePath: await chrome.executablePath,
-//     headless: true,
-//     ignoreHTTPSErrors: true,
-//   };
-// }else{
-// }
-
 // options = {
-//   args: ["--no-sandbox"],
-// };
+//     headless: true,
+//     executablePath: '/nix/store/x205pbkd5xh5g4iv0g58xjla55has3cx-chromium-108.0.5359.94/bin/chromium-browser',
+//     args: ['--no-sandbox', '--disable-setuid-sandbox']
+// } //for replit
 
-// optin
+options = {
+    headless: true,
+} //for local machine like vs code
+
 
 async function performLogin() {
   try {
-    puppeteer.use(StealthPlugin());
-    browser = await puppeteer.launch({
-      args:chromium.args,
-      defaultViewport:chromium.defaultViewport,
-      executablePath: await chromium.executablePath,
-      headless: chromium.headless,
-      ignoreHTTPSErrors: true,
-      args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
-    })
-
-
-    // browser = await puppeteer.use(StealthPlugin()).launch(options);
+    browser = await puppeteer.launch(options);
     const page = await browser.newPage();
     await page.goto(loginUrl, { waitUntil: "domcontentloaded" });
 
@@ -105,6 +85,8 @@ async function checkNewPlacements(page) {
         newPlacementsElement
       );
       console.log(`Number of new placements: ${newPlacementsCount}`);
+      //bot.sendMessage(chatId, `Number of new placements: ${newPlacementsCount}`)
+      //kk
       if (newPlacementsCount > 0) {
         const message = `New placements available! Count: ${newPlacementsCount}`;
         bot.sendMessage(chatId, message);
@@ -122,16 +104,26 @@ async function checkNewPlacements(page) {
           const expiresAt = await element.$eval("time", (el) =>
             el.textContent.trim()
           );
-          // const expiresAt="2023-08-04 19:54:35";
-          const formattedExpiresAt = new Date(expiresAt).toLocaleString("en-US", {hour12: true});
-          const datenow = new Date();
-          const diffinsec = Math.abs(new Date(expiresAt) - datenow)/1000;
-          const hours = Math.floor(diffinsec/3600)%24;
-          const minutes = Math.floor(diffinsec/60)%60;
-          const seconds = Math.floor(diffinsec%60);
+          const formattedExpiresAt = new Date(expiresAt).toLocaleString("en-US", { hour12: true });
+          //not working due to timezone diffrence
+          // const expiresAt="2023-08-10 13:00:00";
+          // const date=new Date(expiresAt)
+          // const now=new Date()
+          // const diff=date-now
+          // const hours=Math.floor((diff/(1000))%24)
+          // const minutes=Math.floor((diff/(1000*60))%60)
+          // const seconds=Math.floor((diff/(1000))%60)
+          // console.log(hours)
+          //working
+          const now = moment().tz("Asia/Kolkata");
+          const expiry = moment.tz(expiresAt, "YYYY-MM-DD HH:mm:ss", "Asia/Kolkata");
+
+          let diff = expiry.diff(now);
+          let duration = moment.duration(diff);
 
 
-          const newmsg = `Company Name: ${companyName}\nCompany URL: ${companyURL}\nRole: ${role}\nExpires At: ${formattedExpiresAt}\nTime Left: ${hours} hours ${minutes} minutes ${seconds} seconds`;
+
+          const newmsg = `Company Name: ${companyName}\nCompany URL: ${companyURL}\nRole: ${role}\nExpires At: ${formattedExpiresAt}\nTime Left: ${duration.hours()} hours ${duration.minutes()} minutes ${duration.seconds()} seconds`;
 
           // const companyId = companyURL.split('/').pop();
           const companyId = companyURL.match(/\/(\d+)$/)[1];
@@ -176,24 +168,24 @@ async function checkNewPlacements(page) {
                 (el) => el.textContent.trim()
               );
               const companyDescriptions = await companyPage.$$eval(
-                "div.mt-2.flex.items-center.text-sm.text-gray-500",
+                "div.flex.items-center.text-sm.text-gray-500",
                 (elements) => elements.map((el) => el.textContent.trim())
               );
               const details = await companyPage.evaluate(() => {
-                  let detailsObj = {};
-                  const dtNodes = Array.from(document.querySelectorAll('dt'));
-                  const ddNodes = Array.from(document.querySelectorAll('dd'));
-          
-                  dtNodes.forEach((node, index) => {
-                      detailsObj[node.textContent] = ddNodes[index].textContent.trim()||'NA';
-                  });
-                  
-                  return detailsObj;
+                let detailsObj = {};
+                const dtNodes = Array.from(document.querySelectorAll('dt'));
+                const ddNodes = Array.from(document.querySelectorAll('dd'));
+
+                dtNodes.forEach((node, index) => {
+                  detailsObj[node.textContent] = ddNodes[index].textContent.trim() || 'NA';
+                });
+
+                return detailsObj;
               });
 
               const newmsg3 = `Company Name: ${companyName1}\nJob Type: ${companyDescriptions[0]
                 }\nLocation: ${companyDescriptions[1]}\nEmployment Type: ${companyDescriptions[2]
-                }\nSalary: ${companyDescriptions[3].replace(/\n\s+/g, " ")}\nBond: ${details['Bond']}\nProcess :${details['Interview Process']}\nWebsite :${details['Company Website']}\nJob Description: ${details['Additional Details']}
+                }\nSalary: ${companyDescriptions[3].replace(/\n\s+/g, " ") || 'NA'}\nBond: ${details['Bond']}\nProcess :${details['Interview Process']}\nWebsite :${details['Company Website']}\nJob Description: ${details['Additional Details']}
               `;
 
               const inline_keyboard1 = {
@@ -210,7 +202,7 @@ async function checkNewPlacements(page) {
                 reply_markup: inline_keyboard1,
               });
             } catch (err) {
-              console.log("Error in info:"+err);
+              console.log("Error in info:" + err);
             }
           } else if (queryData === "apply") {
             try {
@@ -232,7 +224,7 @@ async function checkNewPlacements(page) {
                 `You have applied to ${companyName2}. Good luck with your application!`
               );
             } catch (err) {
-              console.log("Error in apply:"+err);
+              console.log("Error in apply:" + err);
             }
           }
 
@@ -248,47 +240,25 @@ async function checkNewPlacements(page) {
 }
 
 
-// async function continuouslyCheckPlacements() {
-//   try {
-//     let page;
+async function continuouslyCheckPlacements() {
+  try {
+    let page;
 
-//     if (!isLoggedIn) {
-//       page = await performLogin();
-//       isLoggedIn = true;
-//     } else {
-//       const pages = await browser.pages();
-//       page = pages[0];
-//     }
-//     await checkNewPlacements(page);
-//     const timeout = 5 * 60 * 1000;
-//     setTimeout(continuouslyCheckPlacements, timeout);
-//   } catch (error) {
-//     console.error("Error occurred with continouslycheckplacement:", error);
-//   }
-// }
-
-// continuouslyCheckPlacements();
-
-exports.handler = async (event, context) => {
-  const recursivelyCheckPlacements = async () => {
-    try {
-      let page;
-
-      if (!isLoggedIn) {
-        page = await performLogin();
-        isLoggedIn = true;
-      } else {
-        const pages = await browser.pages();
-        page = pages[0];
-      }
-      await checkNewPlacements(page);
-      const timeout = 5 * 60 * 1000;
-      setTimeout(recursivelyCheckPlacements, timeout);  // Call the function recursively
-    } catch (error) {
-      console.error("Error occurred with continuouslyCheckPlacements:", error);
+    if (!isLoggedIn) {
+      page = await performLogin();
+      var indiaTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+      console.log(indiaTime);
+      isLoggedIn = true;
+    } else {
+      const pages = await browser.pages();
+      page = pages[0];
     }
-  };
+    await checkNewPlacements(page);
+    const timeout = 5 * 60 * 1000;
+    setTimeout(continuouslyCheckPlacements, timeout);
+  } catch (error) {
+    console.error("Error occurred with continouslycheckplacement:", error);
+  }
+}
 
-  // Start the initial invocation of the recursive function
-  recursivelyCheckPlacements();
-};
+continuouslyCheckPlacements();

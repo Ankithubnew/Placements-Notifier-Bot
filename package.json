@@ -4,19 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index2.js"
+    "start": "nodemon indexs.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@sparticuz/chromium": "^106.0.2",
-    "chrome-aws-lambda": "^10.1.0",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "moment-timezone": "^0.5.43",
     "node-telegram-bot-api": "^0.61.0",
-    "nodemon": "^3.0.1",
-    "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2"
+    "nodemon": "^3.0.1"
   }
 }
