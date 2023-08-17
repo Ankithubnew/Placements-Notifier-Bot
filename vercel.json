@@ -1,4 +1,0 @@
-{
-    "builds": [{ "src": "script2.js", "use": "@vercel/node" }],
-    "routes": [{ "src": "/(.*)", "dest": "/script2.js" }]
-  }
