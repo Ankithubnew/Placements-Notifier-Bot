@@ -46,7 +46,13 @@ You can also use PlacementsNotifierBot on Replit:
    - `PASSWORD`: Your password for Masai School login.
    - `BOT_TOKEN`: Your Telegram Bot Token.
 
-3. Run the Replit server.
+3. Change the line no 20 chat id with your telegram chat id to find the chat id start this telegram bot it will give you your chat id [RawDataBot](https://t.me/raw_data_bot)
+
+   ```const chatId = "replacewithyourchatid"```
+
+4. Run the Replit server.
+
+Check out how to deploy on replit: [Watch Here](https://drive.google.com/file/d/12CQum85EHOA6ckAHdGWWH0ePJUn6DxPV/view).
 
 ## Showcase
 
