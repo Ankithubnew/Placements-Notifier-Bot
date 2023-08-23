@@ -30,8 +30,9 @@ BOT_TOKEN="your-telegram-bot-token"
 
 To obtain a Telegram Bot Token, you can follow these steps:
 
-- Create a bot on Telegram by talking to the BotFather (https://core.telegram.org/bots#botfather).
+- Create a bot on Telegram by talking to the BotFather (https://core.telegram.org/bots#botfather) [find telegram bot token](https://drive.google.com/file/d/12CQum85EHOA6ckAHdGWWH0ePJUn6DxPV/view).
 - Once you have your Bot Token, replace `your-telegram-bot-token` in the `.env` file.
+- Change the line no 10 chatId with your telegram chat id to find the chat id start this telegram bot it will give you your chat id [RawDataBot](https://t.me/raw_data_bot)
 
 4. Start the bot: `npm start`.
 
@@ -46,7 +47,7 @@ You can also use PlacementsNotifierBot on Replit:
    - `PASSWORD`: Your password for Masai School login.
    - `BOT_TOKEN`: Your Telegram Bot Token.
 
-3. Change the line no 20 chat id with your telegram chat id to find the chat id start this telegram bot it will give you your chat id [RawDataBot](https://t.me/raw_data_bot)
+3. Change the line no 20 chatId with your telegram chat id to find the chat id start this telegram bot it will give you your chat id [RawDataBot](https://t.me/raw_data_bot)
 
    ```const chatId = "replacewithyourchatid"```
 
